@@ -12,10 +12,10 @@ using TheCodeCamp.Data;
 
 namespace TheCodeCamp
 {
-  public class AutofacConfig
-  {
-    public static void Register()
+    public class AutofacConfig
     {
+        public static void Register()
+        {
             var bldr = new ContainerBuilder();
             var config = GlobalConfiguration.Configuration;
             bldr.RegisterApiControllers(Assembly.GetExecutingAssembly());
@@ -24,11 +24,11 @@ namespace TheCodeCamp
             bldr.RegisterWebApiModelBinderProvider();
             var container = bldr.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
-    }
+        }
 
-    private static void RegisterServices(ContainerBuilder bldr)
-    {
-            var config = new MapperConfiguration(cfg => 
+        private static void RegisterServices(ContainerBuilder bldr)
+        {
+            var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new CampingMappingProfile());
             });
@@ -43,6 +43,6 @@ namespace TheCodeCamp
             bldr.RegisterType<CampRepository>()
             .As<ICampRepository>()
             .InstancePerRequest();
+        }
     }
-  }
 }
