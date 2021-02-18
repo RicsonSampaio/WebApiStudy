@@ -11,6 +11,7 @@ using TheCodeCamp.Models;
 
 namespace TheCodeCamp.Controllers
 {
+    [RoutePrefix("api/camps")]
     public class CampsController : ApiController
     {
         private readonly ICampRepository _repository;
@@ -23,11 +24,12 @@ namespace TheCodeCamp.Controllers
         }
 
         [HttpGet]
-        public async Task<IHttpActionResult> GetAllCamps()
+        [Route()]
+        public async Task<IHttpActionResult> GetAllCamps(bool includeTalks = false)
         {
             try
             {
-                var result = await _repository.GetAllCampsAsync();
+                var result = await _repository.GetAllCampsAsync(includeTalks);
                 var mapperResult = _mapper.Map<IEnumerable<CampModel>>(result);
                 return Ok(mapperResult);
             }
@@ -37,7 +39,24 @@ namespace TheCodeCamp.Controllers
                 return InternalServerError();
             }
             
-        } 
+        }
+
+        [HttpGet]
+        [Route("{moniker}")]
+        public async Task<IHttpActionResult> GetSingleCamp(string moniker)
+        {
+            try
+            {
+                var result = await _repository.GetCampAsync(moniker);
+                if (result == null) return NotFound();
+                return Ok(_mapper.Map<CampModel>(result)) ;
+            }
+            catch (Exception)
+            {
+                // TODO logging
+                return InternalServerError();
+            }
+        }
 
     }
 }
